@@ -13,5 +13,13 @@ export const router = createBrowserRouter([
             }
         ]
     },
+    {
+        Component: Login,
+        path: "/login"
+    },
+    {
+        Component: Register,
+        path: "/register"
+    }
 
 ])
