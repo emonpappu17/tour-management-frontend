@@ -4,15 +4,27 @@ import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 import { useForm } from 'react-hook-form';
 import { Link } from 'react-router';
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+const formSchema = z.object({
+    name: z.string().min(2).max(50),
+})
 
 const RegisterForm = ({
     className,
     ...props
 }: React.HTMLAttributes<HTMLDivElement>) => {
 
-    const form = useForm();
+    const form = useForm<z.infer<typeof formSchema>>({
+        resolver: zodResolver(formSchema),
+        // default value na dile uncontrolled/controlled error dibe.jokhon kono input empty thake tokhon tar value undefined thake.
+        defaultValues: {
+            name: ""
+        }
+    });
 
-    const onSubmit = (data) => {
+    const onSubmit = (data: z.infer<typeof formSchema>) => {
         console.log(data);
     }
 
@@ -102,7 +114,7 @@ const RegisterForm = ({
           </form>
         </Form> */}
                 <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)} className='border'>
+                    <form onSubmit={form.handleSubmit(onSubmit)} className=''>
                         <FormField
                             control={form.control}
                             name="name"
@@ -112,14 +124,15 @@ const RegisterForm = ({
                                     <FormControl>
                                         <Input placeholder="shadcn" {...field} />
                                     </FormControl>
-                                    <FormDescription>
+                                    <FormDescription className='sr-only'>
                                         This is your public display name.
                                     </FormDescription>
                                     <FormMessage />
                                 </FormItem>
                             )}
                         />
-                        <Button type="submit">Submit</Button>                    </form>
+                        <Button type="submit">Submit</Button>
+                    </form>
                 </Form>
 
                 <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
