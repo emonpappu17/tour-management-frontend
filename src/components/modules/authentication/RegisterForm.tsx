@@ -7,6 +7,8 @@ import { Link } from 'react-router';
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Password from '@/components/ui/Password';
+import { useRegisterMutation } from '@/redux/features/auth/auth.api';
+import { toast } from 'sonner';
 
 const registerSchema = z.object({
   name: z.string().min(3, {
@@ -25,6 +27,8 @@ const RegisterForm = ({
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) => {
 
+  const [register] = useRegisterMutation();
+
   const form = useForm<z.infer<typeof registerSchema>>({
     resolver: zodResolver(registerSchema),
     // default value na dile uncontrolled/controlled error dibe.jokhon kono input empty thake tokhon tar value undefined thake.
@@ -36,8 +40,20 @@ const RegisterForm = ({
     }
   });
 
-  const onSubmit = (data: z.infer<typeof registerSchema>) => {
-    console.log(data);
+  const onSubmit = async (data: z.infer<typeof registerSchema>) => {
+    const userInfo = {
+      name: data.name,
+      email: data.email,
+      password: data.password
+    }
+    try {
+      const result = await register(userInfo);
+      console.log(result);
+      toast.success("User created successfully")
+
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   return (
@@ -50,81 +66,6 @@ const RegisterForm = ({
       </div>
 
       <div className="grid gap-6">
-        {/* <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Name</FormLabel>
-                  <FormControl>
-                    <Input placeholder="John Doe" {...field} />
-                  </FormControl>
-                  <FormDescription className="sr-only">
-                    This is your public display name.
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="john.doe@company.com"
-                      type="email"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormDescription className="sr-only">
-                    This is your public display name.
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="password"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Password</FormLabel>
-                  <FormControl>
-                    <Password {...field} />
-                  </FormControl>
-                  <FormDescription className="sr-only">
-                    This is your public display name.
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="confirmPassword"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Confirm Password</FormLabel>
-                  <FormControl>
-                    <Password {...field} />
-                  </FormControl>
-                  <FormDescription className="sr-only">
-                    This is your public display name.
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <Button type="submit" className="w-full">
-              Submit
-            </Button>
-          </form>
-        </Form> */}
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-6'>
             <FormField
