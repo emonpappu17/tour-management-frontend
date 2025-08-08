@@ -1,14 +1,14 @@
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { cn } from '@/lib/utils';
-import { useForm } from 'react-hook-form';
-import { Link } from 'react-router';
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
 import Password from '@/components/ui/Password';
+import { cn } from '@/lib/utils';
 import { useRegisterMutation } from '@/redux/features/auth/auth.api';
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from 'react-hook-form';
+import { Link, useNavigate } from 'react-router';
 import { toast } from 'sonner';
+import { z } from "zod";
 
 const registerSchema = z.object({
   name: z.string().min(3, {
@@ -29,6 +29,8 @@ const RegisterForm = ({
 
   const [register] = useRegisterMutation();
 
+  const navigate = useNavigate();
+
   const form = useForm<z.infer<typeof registerSchema>>({
     resolver: zodResolver(registerSchema),
     // default value na dile uncontrolled/controlled error dibe.jokhon kono input empty thake tokhon tar value undefined thake.
@@ -47,10 +49,10 @@ const RegisterForm = ({
       password: data.password
     }
     try {
-      const result = await register(userInfo);
+      const result = await register(userInfo).unwrap();
       console.log(result);
       toast.success("User created successfully")
-
+      navigate('/verify')
     } catch (error) {
       console.log(error);
     }
