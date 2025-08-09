@@ -2,10 +2,13 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
+import { useSendOtpMutation } from "@/redux/features/auth/auth.api";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Dot } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useLocation, useNavigate } from "react-router";
+import { toast } from "sonner";
 import z from "zod";
 
 const FormSchema = z.object({
@@ -14,13 +17,16 @@ const FormSchema = z.object({
     }),
 })
 
-
 const Verify = () => {
     const location = useLocation();
 
     const navigate = useNavigate();
 
     const [email] = useState(location.state);
+
+    const [confirmed, setConfirmed] = useState(false);
+
+    const [sendOtp] = useSendOtpMutation();
 
     const form = useForm<z.infer<typeof FormSchema>>({
         resolver: zodResolver(FormSchema),
@@ -29,8 +35,25 @@ const Verify = () => {
         },
     })
 
+    const handleConfirm = async () => {
+        try {
+            const res = await sendOtp({ email: email }).unwrap();
+
+            if (res.success) {
+                toast.success("OTP Sent")
+            }
+
+            setConfirmed(true)
+
+        } catch (error) {
+            console.log(error);
+        }
+
+    }
+
     const onSubmit = (data: z.infer<typeof FormSchema>) => {
         console.log(data);
+
     }
 
     //! Needed - Turned of for development
@@ -41,53 +64,81 @@ const Verify = () => {
     // }, [email, navigate])
 
     return (
-        <div className="grid place-content-center bg-amber-300 h-screen">
-            <Card className="max-w-fit">
-                <CardHeader>
-                    <CardTitle className="text-xl">Verify your email address</CardTitle>
-                    <CardDescription>
-                        Please enter the 6-digit code we send to <br /> {email}
-                    </CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <Form {...form}>
-                        <form
-                            id="otp-form"
-                            onSubmit={form.handleSubmit(onSubmit)}
-                            className="w-2/3 space-y-6"
-                        >
-                            <FormField
-                                control={form.control}
-                                name="pin"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>One-Time Password</FormLabel>
-                                        <FormControl>
-                                            <InputOTP maxLength={6} {...field}>
-                                                <InputOTPGroup>
-                                                    <InputOTPSlot index={0} />
-                                                    <InputOTPSlot index={1} />
-                                                    <InputOTPSlot index={2} />
-                                                    <InputOTPSlot index={3} />
-                                                    <InputOTPSlot index={4} />
-                                                    <InputOTPSlot index={5} />
-                                                </InputOTPGroup>
-                                            </InputOTP>
-                                        </FormControl>
-                                        <FormDescription>
-                                            Please enter the one-time password sent to your phone.
-                                        </FormDescription>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                        </form>
-                    </Form>
-                </CardContent>
-                <CardFooter className="flex justify-end">
-                    <Button form="otp-form" type="submit">Submit</Button>
-                </CardFooter>
-            </Card>
+        <div className="grid place-content-center h-screen">
+            {
+                confirmed ? (
+                    <Card className="max-w-fit">
+                        <CardHeader>
+                            <CardTitle className="text-xl">Verify your email address</CardTitle>
+                            <CardDescription>
+                                Please enter the 6-digit code we send to <br /> {email}
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <Form {...form}>
+                                <form
+                                    id="otp-form"
+                                    onSubmit={form.handleSubmit(onSubmit)}
+                                    className="space-y-6 "
+                                >
+                                    <FormField
+                                        control={form.control}
+                                        name="pin"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>One-Time Password</FormLabel>
+                                                <FormControl>
+                                                    <InputOTP maxLength={6} {...field}>
+                                                        <InputOTPGroup>
+                                                            <InputOTPSlot index={0} />
+                                                        </InputOTPGroup>
+                                                        <InputOTPGroup>
+                                                            <InputOTPSlot index={1} />
+                                                        </InputOTPGroup>
+                                                        <InputOTPGroup>
+                                                            <InputOTPSlot index={2} />
+                                                        </InputOTPGroup>
+                                                        <Dot></Dot>
+                                                        <InputOTPGroup>
+                                                            <InputOTPSlot index={3} />
+                                                        </InputOTPGroup>
+                                                        <InputOTPGroup>
+                                                            <InputOTPSlot index={4} />
+                                                        </InputOTPGroup>
+                                                        <InputOTPGroup>
+                                                            <InputOTPSlot index={5} />
+                                                        </InputOTPGroup>
+                                                    </InputOTP>
+                                                </FormControl>
+                                                <FormDescription>
+
+                                                </FormDescription>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                </form>
+                            </Form>
+                        </CardContent>
+                        <CardFooter className="flex justify-end">
+                            <Button form="otp-form" type="submit">Submit</Button>
+                        </CardFooter>
+                    </Card>
+                ) : (
+                    <Card>
+                        <CardHeader>
+                            <CardTitle className="text-xl">Verify your email address</CardTitle>
+                            <CardDescription>
+                                We will send you an OTP at <br /> {email}
+                            </CardDescription>
+                        </CardHeader>
+
+                        <CardFooter className="flex justify-end">
+                            <Button onClick={handleConfirm} className="w-[300px]">Confirm</Button>
+                        </CardFooter>
+                    </Card>
+                )
+            }
         </div>
     );
 };
