@@ -1,6 +1,5 @@
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-
 import { Link, useNavigate } from "react-router"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form"
@@ -25,7 +24,12 @@ export function LoginForm({
             console.log(res);
         } catch (error) {
             console.log(error);
-            if (error.status === 401) {
+
+            if (error.data?.message === "Password doest not match") {
+                toast.error("Invalid credentials")
+            }
+
+            if (error.data?.message === "User is not verified") {
                 toast.error("Your account is not verified")
                 navigate("/verify", { state: data.email })
             }
