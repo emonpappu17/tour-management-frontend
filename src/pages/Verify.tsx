@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
-import { useSendOtpMutation } from "@/redux/features/auth/auth.api";
+import { useSendOtpMutation, useVerifyOtpMutation } from "@/redux/features/auth/auth.api";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Dot } from "lucide-react";
 import { useState } from "react";
@@ -28,6 +28,8 @@ const Verify = () => {
 
     const [sendOtp] = useSendOtpMutation();
 
+    const [verifyOtp] = useVerifyOtpMutation();
+
     const form = useForm<z.infer<typeof FormSchema>>({
         resolver: zodResolver(FormSchema),
         defaultValues: {
@@ -36,14 +38,14 @@ const Verify = () => {
     })
 
     const handleConfirm = async () => {
+        const toastId = toast.loading("Sending OTP")
         try {
             const res = await sendOtp({ email: email }).unwrap();
 
             if (res.success) {
-                toast.success("OTP Sent")
+                toast.success("OTP Sent", { id: toastId })
+                setConfirmed(true)
             }
-
-            setConfirmed(true)
 
         } catch (error) {
             console.log(error);
@@ -51,9 +53,24 @@ const Verify = () => {
 
     }
 
-    const onSubmit = (data: z.infer<typeof FormSchema>) => {
-        console.log(data);
+    const onSubmit = async (data: z.infer<typeof FormSchema>) => {
+        const toastId = toast.loading("Verifying OTP")
 
+        const userInfo = {
+            email,
+            otp: data.pin
+        }
+
+        try {
+            const res = await verifyOtp(userInfo).unwrap();
+
+            if (res.success) {
+                toast.success("OTP Verified", { id: toastId })
+                setConfirmed(true)
+            }
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     //! Needed - Turned of for development
