@@ -1,7 +1,7 @@
 import { baseApi } from "@/redux/baseApi";
 import { IResponse, ISendOtp, IVerifyOtp } from "@/types";
 
-const authApi = baseApi.injectEndpoints({
+export const authApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
         login: builder.mutation({
             query: (userInfo) => ({
@@ -9,6 +9,13 @@ const authApi = baseApi.injectEndpoints({
                 method: "POST",
                 data: userInfo   // when we use fetchBaseQuery we send data/userInfo from body but when we send data/userInfo with axiosBaseQuery we must use data to send data/userInfo
             })
+        }),
+        logout: builder.mutation({
+            query: () => ({
+                url: "/auth/logout",
+                method: "POST",
+            }),
+            invalidatesTags: ["USER"]
         }),
         register: builder.mutation({
             query: (userInfo) => ({
@@ -31,7 +38,14 @@ const authApi = baseApi.injectEndpoints({
                 data: userInfo
             })
         }),
+        userInfo: builder.query({
+            query: () => ({
+                url: "/user/me",
+                method: "GET",
+            }),
+            providesTags: ["USER"]
+        }),
     })
 })
 
-export const { useRegisterMutation, useLoginMutation, useSendOtpMutation, useVerifyOtpMutation } = authApi;
+export const { useRegisterMutation, useLoginMutation, useSendOtpMutation, useVerifyOtpMutation, useUserInfoQuery, useLogoutMutation } = authApi;
