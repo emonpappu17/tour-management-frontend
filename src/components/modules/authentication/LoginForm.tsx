@@ -6,6 +6,7 @@ import { FieldValues, SubmitHandler, useForm } from "react-hook-form"
 import { Input } from "@/components/ui/input"
 import { useLoginMutation } from "@/redux/features/auth/auth.api"
 import { toast } from "sonner"
+import config from "@/config"
 
 export function LoginForm({
     className,
@@ -96,7 +97,9 @@ export function LoginForm({
                     </span>
                 </div>
 
+                {/* http://localhost:5000/api/v1/auth/google */}
                 <Button
+                    onClick={() => window.open(`${config.baseUrl}/auth/google`)}
                     type="button"
                     variant="outline"
                     className="w-full cursor-pointer"

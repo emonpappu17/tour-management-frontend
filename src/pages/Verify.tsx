@@ -42,16 +42,13 @@ const Verify = () => {
 
     const handleSendOtp = async () => {
         const toastId = toast.loading("Sending OTP");
-
         try {
             const res = await sendOtp({ email: email }).unwrap();
-
             if (res.success) {
                 toast.success("OTP Sent", { id: toastId })
                 setConfirmed(true)
                 setTimer(5)
             }
-
         } catch (error) {
             console.log(error);
         }
@@ -60,17 +57,12 @@ const Verify = () => {
 
     const onSubmit = async (data: z.infer<typeof FormSchema>) => {
         const toastId = toast.loading("Verifying OTP")
-
         const userInfo = {
             email,
             otp: data.pin
         }
-
-        // setConfirmed(true)
-
         try {
             const res = await verifyOtp(userInfo).unwrap();
-
             if (res.success) {
                 toast.success("OTP Verified", { id: toastId })
             }
