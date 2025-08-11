@@ -17,9 +17,6 @@ import { getSidebarItems } from "@/utils/getSIdebarItems"
 import { Link } from "react-router"
 import { useUserInfoQuery } from "@/redux/features/auth/auth.api"
 
-// This is sample data.
-
-
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { data: userData } = useUserInfoQuery(undefined);
   const data = {
