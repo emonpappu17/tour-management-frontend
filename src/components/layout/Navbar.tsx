@@ -100,7 +100,7 @@ export default function Navbar() {
               <Logo />
             </a>
             {/* Navigation menu */}
-            <NavigationMenu className="max-md:hidden">
+            {/* <NavigationMenu className="max-md:hidden">
               <NavigationMenuList className="gap-2">
                 {navigationLinks.map((link, index) => (
                   <>
@@ -127,7 +127,32 @@ export default function Navbar() {
                   </>
                 ))}
               </NavigationMenuList>
+            </NavigationMenu> */}
+
+            <NavigationMenu className="max-md:hidden">
+              <NavigationMenuList className="gap-2">
+                {navigationLinks.map((link, index) => {
+                  // Generate a unique key: preferably use link.id or href
+                  const key = link.href || index;
+
+                  if (link.role === "PUBLIC" || link.role === data?.data?.role) {
+                    return (
+                      <NavigationMenuItem key={key}>
+                        <NavigationMenuLink
+                          asChild
+                          className="text-muted-foreground hover:text-primary py-1.5 font-medium"
+                        >
+                          <Link to={link.href}>{link.label}</Link>
+                        </NavigationMenuLink>
+                      </NavigationMenuItem>
+                    );
+                  }
+
+                  return null;
+                })}
+              </NavigationMenuList>
             </NavigationMenu>
+
           </div>
         </div>
         {/* Right side */}
