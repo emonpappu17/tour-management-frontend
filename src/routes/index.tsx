@@ -25,11 +25,15 @@ export const router = createBrowserRouter([
         Component: DashboardLayout,
         children: [
             {
-                path: 'analytics',
+                path: '/admin/analytics',
                 Component: Analytics
             },
             {
                 path: 'add-tour',
+                Component: AddTour
+            },
+            {
+                path: 'add-tour-type',
                 Component: AddTour
             },
         ]
