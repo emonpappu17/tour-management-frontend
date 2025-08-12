@@ -10,7 +10,7 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useLocation, useNavigate } from "react-router";
 import { toast } from "sonner";
-import z from "zod";
+import z, { negative } from "zod";
 
 const FormSchema = z.object({
     pin: z.string().min(6, {
@@ -51,6 +51,9 @@ const Verify = () => {
             }
         } catch (error) {
             console.log(error);
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const err = error as any;
+            toast.error(err.data.message || "Sending OTP failed", { id: toastId })
         }
 
     }
@@ -65,18 +68,22 @@ const Verify = () => {
             const res = await verifyOtp(userInfo).unwrap();
             if (res.success) {
                 toast.success("OTP Verified", { id: toastId })
+                negative("/")
             }
         } catch (error) {
             console.log(error);
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const err = error as any;
+            toast.error(err.data.message || "Verification failed", { id: toastId })
         }
     }
 
     //! Needed - Turned of for development
-    // useEffect(() => {
-    //     if (!email) {
-    //         navigate('/')
-    //     }
-    // }, [email, navigate])
+    useEffect(() => {
+        if (!email) {
+            navigate('/')
+        }
+    }, [email, navigate])
 
     useEffect(() => {
         if (!email || !confirmed) {

@@ -29,9 +29,13 @@ export function AddTourTypeModal() {
                 form.reset();
             }
         } catch (error) {
-            console.log('tour type error==>', error);
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const err = error as any;
+
+            console.log('tour type error==>', err);
+
             setOpen(false)
-            toast.error(error.data.message || "Fail to add Tour Type")
+            toast.error(err.data.message || "Fail to add Tour Type")
             form.reset();
         }
     }

@@ -2,6 +2,7 @@ import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import Password from '@/components/ui/Password';
+import config from '@/config';
 import { cn } from '@/lib/utils';
 import { useRegisterMutation } from '@/redux/features/auth/auth.api';
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -10,13 +11,56 @@ import { Link, useNavigate } from 'react-router';
 import { toast } from 'sonner';
 import { z } from "zod";
 
+// const registerSchema = z.object({
+//   name: z.string().min(3, {
+//     error: "Name is too short"
+//   }).max(50),
+//   email: z.email(),
+//   password: z.string().min(8, { error: "Password is too short" }),
+//   confirmPassword: z.string().min(8, { error: "Confirm Password is too short" })
+// }).refine((data) => data.password === data.confirmPassword, {
+//   message: "Password do not match",
+//   path: ["confirmPassword"]
+// })
+
 const registerSchema = z.object({
-  name: z.string().min(3, {
-    error: "Name is too short"
-  }).max(50),
-  email: z.email(),
-  password: z.string().min(8, { error: "Password is too short" }),
-  confirmPassword: z.string().min(8, { error: "Confirm Password is too short" })
+  // name: z.string().min(3, {
+  //   error: "Name is too short"
+  // }).max(50),
+  name: z
+    .string()
+    .min(2, { message: "Name must be at least 2 characters long." })
+    .max(50, { message: "Name cannot exceed 50 characters." }),
+  // email: z.email(),
+  // password: z.string().min(8, { error: "Password is too short" }),
+
+  email: z
+    .email()
+    .min(5, { message: "Email must be at least 5 characters long." })
+    .max(100, { message: "Email cannot exceed 100 characters." }),
+  password: z
+    .string()
+    .min(8, { message: "Password must be at least 8 characters long." })
+    .regex(/^(?=.*[A-Z])/, {
+      message: "Password must contain at least 1 uppercase letter.",
+    })
+    .regex(/^(?=.*[!@#$%^&*])/, {
+      message: "Password must contain at least 1 special character.",
+    })
+    .regex(/^(?=.*\d)/, {
+      message: "Password must contain at least 1 number.",
+    }),
+  confirmPassword: z.string()
+    .min(8, { message: "Password must be at least 8 characters long." })
+    .regex(/^(?=.*[A-Z])/, {
+      message: "Password must contain at least 1 uppercase letter.",
+    })
+    .regex(/^(?=.*[!@#$%^&*])/, {
+      message: "Password must contain at least 1 special character.",
+    })
+    .regex(/^(?=.*\d)/, {
+      message: "Password must contain at least 1 number.",
+    }),
 }).refine((data) => data.password === data.confirmPassword, {
   message: "Password do not match",
   path: ["confirmPassword"]
@@ -50,11 +94,13 @@ const RegisterForm = ({
     }
     try {
       const result = await register(userInfo).unwrap();
-      console.log(result);
       toast.success("User created successfully")
-      navigate('/verify')
+      navigate('/verify', { state: result?.data?.email })
     } catch (error) {
       console.log(error);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const err = error as any;
+      toast.error(err.data.message || "Register failed")
     }
   }
 
@@ -147,11 +193,12 @@ const RegisterForm = ({
         </div>
 
         <Button
+          onClick={() => window.open(`${config.baseUrl}/auth/google`)}
           type="button"
           variant="outline"
           className="w-full cursor-pointer"
         >
-          Login with Google
+          Continue Google
         </Button>
       </div>
 

@@ -1,4 +1,4 @@
-import { AddTourTypeModal } from "@/components/modules/admin/TourType/AddTourModal";
+import { AddTourTypeModal } from "@/components/modules/admin/TourType/AddTourTypeModal";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useGetTourTypesQuery } from "@/redux/features/Tour/tour.api";
@@ -18,7 +18,6 @@ const AddTourType = () => {
                     <TableHeader>
                         <TableRow>
                             <TableHead className="w-[100px]">Name</TableHead>
-
                             <TableHead className="text-right">Action</TableHead>
                         </TableRow>
                     </TableHeader>

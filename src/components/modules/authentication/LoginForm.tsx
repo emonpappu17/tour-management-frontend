@@ -1,22 +1,19 @@
-import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import { Link, useNavigate } from "react-router"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { FieldValues, SubmitHandler, useForm } from "react-hook-form"
 import { Input } from "@/components/ui/input"
-import { useLoginMutation } from "@/redux/features/auth/auth.api"
-import { toast } from "sonner"
 import config from "@/config"
+import { cn } from "@/lib/utils"
+import { useLoginMutation } from "@/redux/features/auth/auth.api"
+import { FieldValues, SubmitHandler, useForm } from "react-hook-form"
+import { Link, useNavigate } from "react-router"
+import { toast } from "sonner"
 
 export function LoginForm({
     className,
     ...props
 }: React.HTMLAttributes<HTMLDivElement>) {
-
     const navigate = useNavigate();
-
     const form = useForm();
-
     const [login] = useLoginMutation();
 
     const onSubmit: SubmitHandler<FieldValues> = async (data) => {
@@ -27,13 +24,16 @@ export function LoginForm({
                 navigate("/")
             }
         } catch (error) {
-            console.log(error);
+            console.log('Login error==>', error);
 
-            if (error.data?.message === "Password doest not match") {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const err = error as any;
+
+            if (err.data?.message === "Password doest not match") {
                 toast.error("Invalid credentials")
             }
 
-            if (error.data?.message === "User is not verified") {
+            if (err.data?.message === "User is not verified") {
                 toast.error("Your account is not verified")
                 navigate("/verify", { state: data.email })
             }
