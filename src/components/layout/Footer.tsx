@@ -209,7 +209,7 @@ const Footer = () => {
             <div className="mx-auto container space-y-8 px-4 py-16 lg:space-y-16">
                 <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
                     <div>
-                        <div className="flex items-center gap-3">
+                        <div >
                             <Logo />
                         </div>
 
