@@ -12,14 +12,15 @@ import {
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
+import { useAddDivisionMutation } from "@/redux/features/division/division.api"
 import { useState } from "react"
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form"
+import { toast } from "sonner"
 
 export function AddDivisionModal() {
     const [open, setOpen] = useState(false);
     const [image, setImage] = useState<File | null>(null);
-
-    console.log('image==>', image);
+    const [addDivision] = useAddDivisionMutation();
 
     const form = useForm({
         defaultValues: {
@@ -29,24 +30,31 @@ export function AddDivisionModal() {
     });
 
     const onSubmit: SubmitHandler<FieldValues> = async (data) => {
-        console.log(data);
-        // try {
-        //     const res = await addTourType({ name: data.name }).unwrap();
-        //     if (res.success) {
-        //         toast.success("Tour Type Added")
-        //         setOpen(false);
-        //         form.reset();
-        //     }
-        // } catch (error) {
-        //     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        //     const err = error as any;
+        try {
+            const toastId = toast.loading("Division Adding...");
+            const formData = new FormData();
+            formData.append("data", JSON.stringify(data));
+            formData.append("file", image as File);
 
-        //     console.log('tour type error==>', err);
+            // console.log(formData.get('data'));
+            // console.log(formData.get('file'));
 
-        //     setOpen(false)
-        //     toast.error(err.data.message || "Fail to add Tour Type")
-        //     form.reset();
-        // }
+            const res = await addDivision(formData).unwrap();
+            if (res.success) {
+                toast.success("Division Added", { id: toastId })
+                setOpen(false);
+                form.reset();
+            }
+        } catch (error) {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const err = error as any;
+
+            console.log('division error==>', err);
+
+            setOpen(false)
+            toast.error(err.data.message || "Fail to add Division")
+            form.reset();
+        }
     }
 
     return (
