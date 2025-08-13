@@ -14,7 +14,6 @@ import { ReactNode } from "react";
 interface IProps {
     children: ReactNode,
     onConfirm: () => void
-
 }
 
 export function DeleteConfirmation({ children, onConfirm }: IProps) {
