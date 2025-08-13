@@ -20,7 +20,8 @@ import { toast } from "sonner"
 export function AddDivisionModal() {
     const [open, setOpen] = useState(false);
     const [image, setImage] = useState<File | null>(null);
-    const [addDivision] = useAddDivisionMutation();
+    // const [isButtonDisable, setIsButtonDisable] = useState(false)
+    const [addDivision, { isLoading }] = useAddDivisionMutation();
 
     const form = useForm({
         defaultValues: {
@@ -31,11 +32,11 @@ export function AddDivisionModal() {
 
     const onSubmit: SubmitHandler<FieldValues> = async (data) => {
         try {
+            // setIsButtonDisable(true)
             const toastId = toast.loading("Division Adding...");
             const formData = new FormData();
             formData.append("data", JSON.stringify(data));
             formData.append("file", image as File);
-
             // console.log(formData.get('data'));
             // console.log(formData.get('file'));
 
@@ -44,6 +45,7 @@ export function AddDivisionModal() {
                 toast.success("Division Added", { id: toastId })
                 setOpen(false);
                 form.reset();
+                // setIsButtonDisable(false)
             }
         } catch (error) {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -107,7 +109,8 @@ export function AddDivisionModal() {
                     <DialogClose asChild>
                         <Button variant="outline">Cancel</Button>
                     </DialogClose>
-                    <Button type="submit" form="add-division">Save changes</Button>
+                    <Button type="submit" form="add-division" disabled={form.formState.isSubmitting || isLoading}>  {form.formState.isSubmitting || isLoading ? "Saving..." : "Save changes"}
+                    </Button>
                 </DialogFooter>
             </DialogContent>
         </Dialog>
