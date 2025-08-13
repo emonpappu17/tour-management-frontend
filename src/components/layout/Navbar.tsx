@@ -11,11 +11,11 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
-import { ModeToggle } from "./MoodToggler"
-import { Link } from "react-router"
+import { role } from "@/constants/role"
 import { authApi, useLogoutMutation, useUserInfoQuery } from "@/redux/features/auth/auth.api"
 import { useAppDispatch } from "@/redux/hook"
-import { role } from "@/constants/role"
+import { Link } from "react-router"
+import { ModeToggle } from "./MoodToggler"
 
 // Navigation links array to be used in both desktop and mobile menus
 const navigationLinks = [
@@ -142,9 +142,36 @@ export default function Navbar() {
                         <NavigationMenuLink
                           asChild
                           className="text-muted-foreground hover:text-primary py-1.5 font-medium"
+
                         >
                           <Link to={link.href}>{link.label}</Link>
                         </NavigationMenuLink>
+
+                        {/* <NavigationMenuLink
+                          asChild
+                          className="py-1.5 font-medium"
+                        >
+                          <NavLink
+                            to={link.href}
+                            className={({ isActive }) =>
+                              `text-muted-foreground hover:text-primary ${isActive ? "text-primary font-semibold" : ""
+                              }`
+                            }
+                          >
+                            {link.label}
+                          </NavLink>
+                        </NavigationMenuLink> */}
+
+                        {/* <NavLink
+                          to={link.href}
+                          className={({ isActive }) =>
+                            `py-1.5 font-medium text-muted-foreground hover:text-primary ${isActive ? "text-primary font-semibold" : ""
+                            }`
+                          }
+                        >
+                          {link.label}
+                        </NavLink> */}
+
                       </NavigationMenuItem>
                     );
                   }
