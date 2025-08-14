@@ -1,3 +1,4 @@
+import MultipleImageUploader from "@/components/MultipleImageUploader";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -6,16 +7,21 @@ import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { FileMetadata } from "@/hooks/use-file-upload";
 import { cn } from "@/lib/utils";
 import { useGetDivisionsQuery } from "@/redux/features/division/division.api";
-import { useGetTourTypesQuery } from "@/redux/features/Tour/tour.api";
+import { useAddTourMutation, useGetTourTypesQuery } from "@/redux/features/Tour/tour.api";
 import { format, formatISO } from "date-fns";
 import { CalendarIcon } from "lucide-react";
+import { useState } from "react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 
 const AddTour = () => {
+    const [images, setImages] = useState<(File | FileMetadata)[] | []>([]);
+
     const { data: tourTypeData, isLoading: tourTypeLoading } = useGetTourTypesQuery(undefined);
     const { data: divisionData, isLoading: divisionLoading } = useGetDivisionsQuery(undefined);
+    const [addTour] = useAddTourMutation();
 
     // console.log('tourTypeData==>', tourTypeData);
     // console.log('division data==>', divisionData);
@@ -42,14 +48,25 @@ const AddTour = () => {
     })
 
     const handleSubmit: SubmitHandler<FieldValues> = async (data) => {
-        console.log(data);
         const tourData = {
             ...data,
             startDate: formatISO(data.startDate),
             endDate: formatISO(data.endDate)
         }
 
-        console.log(tourData);
+        const formData = new FormData();
+
+        formData.append("data", JSON.stringify(tourData))
+        images.forEach((image) => formData.append("files", image as File));
+
+        console.log('tourData ===> ', tourData);
+
+        try {
+            const res = await addTour(formData).unwrap()
+            console.log('res===>', res);
+        } catch (error) {
+            console.log(error);
+        }
     }
     return (
         <div className="w-full max-w-4xl mx-auto px-5 mt-16">
@@ -79,7 +96,7 @@ const AddTour = () => {
                                 )}
                             />
 
-                            <div className="flex gap-5">
+                            <div className="md:flex gap-5  ">
                                 <FormField
                                     control={form.control}
                                     name="startDate"
@@ -164,7 +181,7 @@ const AddTour = () => {
                                 />
                             </div>
 
-                            <div className="flex gap-5">
+                            <div className="md:flex gap-5 space-y-5 md:space-y-0">
                                 <FormField
                                     control={form.control}
                                     name="division"
@@ -227,7 +244,7 @@ const AddTour = () => {
                                 />
                             </div>
 
-                            <div className="flex gap-5 items-stretch">
+                            <div className="md:flex gap-5 items-stretch">
                                 <FormField
                                     control={form.control}
                                     name="description"
@@ -241,6 +258,9 @@ const AddTour = () => {
                                         </FormItem>
                                     )}
                                 />
+                                <div className="flex-1 mt-5">
+                                    <MultipleImageUploader onChange={setImages} />
+                                </div>
                             </div>
                         </form>
                     </Form>
