@@ -64,20 +64,164 @@ const AddTour = () => {
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            title: "",
-            description: "",
-            location: "",
-            costFrom: "",
+            // title: "",
+            // description: "",
+            // location: "",
+            // costFrom: "",
+            // startDate: new Date(),
+            // endDate: new Date(Date.now() + 3 * 24 * 60 * 1000),
+            // departureLocation: "",
+            // arrivalLocation: "",
+            // included: [{ value: "" }],
+            // excluded: [{ value: "" }],
+            // amenities: [{ value: "" }],
+            // tourPlan: [{ value: "" }],
+            // maxGuest: "",
+            // minAge: "",
+            // division: "",
+            // tourType: "",
+
+            // title: "Cox's Bazar Beach Adventure",
+            // description:
+            //     "Experience the world's longest natural sea beach with golden sandy shores, crystal clear waters, and breathtaking sunsets. Enjoy beach activities, local seafood, and explore nearby attractions including Himchari National Park and Inani Beach.",
+            // location: "Cox's Bazar",
+            // costFrom: "15000",
+            // startDate: new Date(),
+            // endDate: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000), // 3 days later
+            // departureLocation: "Dhaka",
+            // arrivalLocation: "Cox's Bazar",
+            // included: [
+            //     { value: "Accommodation for 2 nights" },
+            //     { value: "All meals (breakfast, lunch, dinner)" },
+            //     { value: "Transportation (AC bus)" },
+            //     { value: "Professional tour guide" },
+            // ],
+            // excluded: [
+            //     { value: "Personal expenses" },
+            //     { value: "Extra activities not mentioned" },
+            //     { value: "Travel insurance" },
+            // ],
+            // amenities: [
+            //     { value: "Air-conditioned rooms" },
+            //     { value: "Free WiFi" },
+            //     { value: "Swimming pool access" },
+            //     { value: "Beach access" },
+            // ],
+            // tourPlan: [
+            //     { value: "Day 1: Arrival and beach exploration" },
+            //     { value: "Day 2: Himchari National Park visit" },
+            //     { value: "Day 3: Inani Beach and departure" },
+            // ],
+            // maxGuest: "25",
+            // minAge: "5",
+            // division: "",
+            // tourType: "",
+
+            // title: "Sundarbans Wildlife Expedition",
+            // description:
+            //     "Embark on a thrilling journey through the world's largest mangrove forest, home to the majestic Royal Bengal Tiger. Explore tranquil rivers, spot rare wildlife, and enjoy a peaceful escape into nature.",
+            // location: "Sundarbans",
+            // costFrom: "18000",
+            // startDate: new Date(),
+            // endDate: new Date(Date.now() + 4 * 24 * 60 * 60 * 1000), // 4 days later
+            // departureLocation: "Khulna",
+            // arrivalLocation: "Sundarbans",
+            // included: [
+            //     { value: "Accommodation on boat for 3 nights" },
+            //     { value: "All meals (local cuisine)" },
+            //     { value: "Transportation (boat & jeep)" },
+            //     { value: "Licensed forest guide" },
+            // ],
+            // excluded: [
+            //     { value: "Personal expenses" },
+            //     { value: "Camera fees" },
+            //     { value: "Travel insurance" },
+            // ],
+            // amenities: [
+            //     { value: "Private cabins" },
+            //     { value: "On-board dining" },
+            //     { value: "Observation deck" },
+            //     { value: "Fishing equipment" },
+            // ],
+            // tourPlan: [
+            //     { value: "Day 1: Departure from Khulna & Sundarbans entry" },
+            //     { value: "Day 2: Wildlife spotting & canal exploration" },
+            //     { value: "Day 3: Kotka Beach and tiger point visit" },
+            //     { value: "Day 4: Return journey" },
+            // ],
+            // maxGuest: "20",
+            // minAge: "10",
+            // division: "",
+            // tourType: "",
+
+            // title: "Sylhet Tea Garden & Waterfall Escape",
+            // description:
+            //     "Relax among endless tea gardens, enjoy scenic views of rolling hills, and visit stunning waterfalls. Perfect for nature lovers and photography enthusiasts.",
+            // location: "Sylhet",
+            // costFrom: "12000",
+            // startDate: new Date(),
+            // endDate: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000), // 2 days later
+            // departureLocation: "Dhaka",
+            // arrivalLocation: "Sylhet",
+            // included: [
+            //     { value: "Accommodation for 1 night" },
+            //     { value: "Breakfast & dinner" },
+            //     { value: "Transportation (AC bus)" },
+            //     { value: "Local tour guide" },
+            // ],
+            // excluded: [
+            //     { value: "Lunch" },
+            //     { value: "Personal shopping" },
+            //     { value: "Travel insurance" },
+            // ],
+            // amenities: [
+            //     { value: "Air-conditioned rooms" },
+            //     { value: "Complimentary tea tasting" },
+            //     { value: "Balcony with hill view" },
+            //     { value: "Free parking" },
+            // ],
+            // tourPlan: [
+            //     { value: "Day 1: Tea garden & Jaflong visit" },
+            //     { value: "Day 2: Madhabkunda Waterfall & return" },
+            // ],
+            // maxGuest: "30",
+            // minAge: "5",
+            // division: "",
+            // tourType: "",
+
+            title: "Bandarban Hills & Tribal Culture Tour",
+            description:
+                "Discover the serene beauty of Bandarban's hills, visit tribal villages, and trek to waterfalls. Enjoy cultural experiences and breathtaking mountain views.",
+            location: "Bandarban",
+            costFrom: "16000",
             startDate: new Date(),
-            endDate: new Date(Date.now() + 3 * 24 * 60 * 1000),
-            departureLocation: "",
-            arrivalLocation: "",
-            included: [{ value: "" }],
-            excluded: [{ value: "" }],
-            amenities: [{ value: "" }],
-            tourPlan: [{ value: "" }],
-            maxGuest: "",
-            minAge: "",
+            endDate: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000), // 3 days later
+            departureLocation: "Chattogram",
+            arrivalLocation: "Bandarban",
+            included: [
+                { value: "Accommodation for 2 nights" },
+                { value: "Breakfast, lunch, dinner" },
+                { value: "Transportation (Jeep/Chander Gari)" },
+                { value: "Local tribal guide" },
+            ],
+            excluded: [
+                { value: "Personal expenses" },
+                { value: "Special trekking equipment" },
+                { value: "Travel insurance" },
+            ],
+            amenities: [
+                { value: "Hill-view rooms" },
+                { value: "Campfire arrangements" },
+                { value: "Local cultural show" },
+                { value: "Hiking trails access" },
+            ],
+            tourPlan: [
+                { value: "Day 1: Nilgiri Hills & tribal village visit" },
+                { value: "Day 2: Nafakhum Waterfall trekking" },
+                { value: "Day 3: Meghla Tourist Complex & return" },
+            ],
+            maxGuest: "25",
+            minAge: "8",
             division: "",
             tourType: "",
         }
@@ -158,8 +302,8 @@ const AddTour = () => {
         formData.append("data", JSON.stringify(tourData))
         images.forEach((image) => formData.append("files", image as File));
 
-        console.log('Tour raw data-->', data);
-        console.log('tourData ===> ', tourData);
+        // console.log('Tour raw data-->', data);
+        // console.log('tourData ===> ', tourData);
 
         try {
             const res = await addTour(formData).unwrap();
