@@ -23,18 +23,20 @@ const AddTour = () => {
     const { data: divisionData, isLoading: divisionLoading } = useGetDivisionsQuery(undefined);
     const [addTour] = useAddTourMutation();
 
-    // console.log('tourTypeData==>', tourTypeData);
-    // console.log('division data==>', divisionData);
+    const divisionOptions = divisionData?.map(
+        (item: { _id: string, name: string }) => ({
+            value: item._id,
+            label: item.name
+        })
+    )
 
-    const divisionOptions = divisionData?.map((item: { _id: string, name: string }) => ({
-        value: item._id,
-        label: item.name
-    }))
-
-    const tourTypeOptions = tourTypeData?.data?.map((item: { _id: string, name: string }) => ({
-        value: item._id,
-        label: item.name
-    }));
+    const tourTypeOptions = tourTypeData?.data?.map(
+        (item: { _id: string, name: string }) =>
+        ({
+            value: item._id,
+            label: item.name
+        })
+    );
 
     const form = useForm({
         defaultValues: {
@@ -45,25 +47,31 @@ const AddTour = () => {
             startDate: "",
             endDate: "",
             included: [{ value: "" }],
-            excluded: [{ value: "" }]
+            excluded: [{ value: "" }],
+            amenities: [{ value: "" }],
+            tourPlan: [{ value: "" }],
         }
     })
 
-    const { fields, append, remove } = useFieldArray({
+    const {
+        fields: includedFields,
+        append: appendIncluded,
+        remove: removeIncluded
+    } = useFieldArray({
         control: form.control,
         name: "included"
     })
 
     const {
         fields: excludedFields,
-        append: excludedAppend,
-        remove: excludedRemove
+        append: appendExcluded,
+        remove: removeExcluded
     } = useFieldArray({
         control: form.control,
         name: "excluded"
     })
 
-    console.log('fields==>', fields);
+    console.log('includedFields==>', includedFields);
 
     const handleSubmit: SubmitHandler<FieldValues> = async (data) => {
         const tourData = {
@@ -101,6 +109,7 @@ const AddTour = () => {
                             className="space-y-5"
                             onSubmit={form.handleSubmit(handleSubmit)}
                         >
+                            {/* Title */}
                             <FormField
                                 control={form.control}
                                 name="title"
@@ -115,6 +124,7 @@ const AddTour = () => {
                                 )}
                             />
 
+                            {/* Star date - End date */}
                             <div className="md:flex gap-5  ">
                                 <FormField
                                     control={form.control}
@@ -200,6 +210,7 @@ const AddTour = () => {
                                 />
                             </div>
 
+                            {/* Division - Tour Type */}
                             <div className="md:flex gap-5 space-y-5 md:space-y-0">
                                 <FormField
                                     control={form.control}
@@ -263,6 +274,7 @@ const AddTour = () => {
                                 />
                             </div>
 
+                            {/* Description - Images */}
                             <div className="md:flex gap-5 items-stretch">
                                 <FormField
                                     control={form.control}
@@ -284,6 +296,7 @@ const AddTour = () => {
 
                             <div className="border-t border-muted w-full" />
 
+                            {/* Include */}
                             <div>
                                 <div className="flex justify-between">
                                     <p className="font-semibold">Included</p>
@@ -291,14 +304,14 @@ const AddTour = () => {
                                         type="button"
                                         variant={"outline"}
                                         size={"icon"}
-                                        onClick={() => append({ value: "" })}
+                                        onClick={() => appendIncluded({ value: "" })}
                                     >
                                         <Plus></Plus>
                                     </Button>
                                 </div>
                                 <div className="space-y-4 mt-4 ">
                                     {
-                                        fields.map((item, index) => (
+                                        includedFields.map((item, index) => (
                                             <div key={item.id} className="flex gap-2">
                                                 <FormField
                                                     control={form.control}
@@ -318,7 +331,8 @@ const AddTour = () => {
                                                     type="button"
                                                     variant={"destructive"}
                                                     size={"icon"}
-                                                    onClick={() => remove(index)}
+                                                    className="!bg-red-700"
+                                                    onClick={() => removeIncluded(index)}
                                                 > <Trash2></Trash2>
                                                 </Button>
                                             </div>
@@ -326,6 +340,8 @@ const AddTour = () => {
                                     }
                                 </div>
                             </div>
+
+                            {/* Exclude */}
                             <div>
                                 <div className="flex justify-between">
                                     <p className="font-semibold">Excluded</p>
@@ -333,7 +349,7 @@ const AddTour = () => {
                                         type="button"
                                         variant={"outline"}
                                         size={"icon"}
-                                        onClick={() => excludedAppend({ value: "" })}
+                                        onClick={() => appendExcluded({ value: "" })}
                                     >
                                         <Plus></Plus>
                                     </Button>
@@ -348,7 +364,6 @@ const AddTour = () => {
 
                                                     render={({ field }) => (
                                                         <FormItem className="flex-1">
-
                                                             <FormControl>
                                                                 <Input {...field} />
                                                             </FormControl>
@@ -360,7 +375,8 @@ const AddTour = () => {
                                                     type="button"
                                                     variant={"destructive"}
                                                     size={"icon"}
-                                                    onClick={() => excludedRemove(index)}
+                                                    className="!bg-red-700"
+                                                    onClick={() => removeExcluded(index)}
                                                 > <Trash2></Trash2>
                                                 </Button>
                                             </div>
