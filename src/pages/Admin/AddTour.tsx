@@ -11,10 +11,33 @@ import { FileMetadata } from "@/hooks/use-file-upload";
 import { cn } from "@/lib/utils";
 import { useGetDivisionsQuery } from "@/redux/features/division/division.api";
 import { useAddTourMutation, useGetTourTypesQuery } from "@/redux/features/Tour/tour.api";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { format, formatISO } from "date-fns";
 import { CalendarIcon, Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { FieldValues, SubmitHandler, useFieldArray, useForm } from "react-hook-form";
+import { toast } from "sonner";
+import z from "zod";
+
+
+const formSchema = z.object({
+    title: z.string().min(1, "Title is required"),
+    description: z.string().min(1, "Description is required"),
+    location: z.string().min(1, "Location is required"),
+    costFrom: z.string().min(1, "Cost is required"),
+    startDate: z.date({ message: "Start date is required" }),
+    endDate: z.date({ message: "End date is required" }),
+    departureLocation: z.string().min(1, "Departure location is required"),
+    arrivalLocation: z.string().min(1, "Arrival location is required"),
+    included: z.array(z.object({ value: z.string() })),
+    excluded: z.array(z.object({ value: z.string() })),
+    amenities: z.array(z.object({ value: z.string() })),
+    tourPlan: z.array(z.object({ value: z.string() })),
+    maxGuest: z.string().min(1, "Max guest is required"),
+    minAge: z.string().min(1, "Minimum age is required"),
+    division: z.string().min(1, "Division is required"),
+    tourType: z.string().min(1, "Tour type is required"),
+})
 
 const AddTour = () => {
     const [images, setImages] = useState<(File | FileMetadata)[] | []>([]);
@@ -38,16 +61,15 @@ const AddTour = () => {
         })
     );
 
-    const form = useForm({
+    const form = useForm<z.infer<typeof formSchema>>({
+        resolver: zodResolver(formSchema),
         defaultValues: {
             title: "",
-            division: "",
-            tourType: "",
             description: "",
             location: "",
             costFrom: "",
-            startDate: "",
-            endDate: "",
+            startDate: new Date(),
+            endDate: new Date(Date.now() + 3 * 24 * 60 * 1000),
             departureLocation: "",
             arrivalLocation: "",
             included: [{ value: "" }],
@@ -55,7 +77,9 @@ const AddTour = () => {
             amenities: [{ value: "" }],
             tourPlan: [{ value: "" }],
             maxGuest: "",
-            minAge: ""
+            minAge: "",
+            division: "",
+            tourType: "",
         }
     })
 
@@ -97,28 +121,61 @@ const AddTour = () => {
 
 
     const handleSubmit: SubmitHandler<FieldValues> = async (data) => {
+        const toastId = toast.loading("Creating tour...");
+
+        if (images.length === 0) {
+            toast.error("Please add some images", { id: toastId });
+            return
+        }
+
         const tourData = {
             ...data,
+            costFrom: Number(data.costFrom),
+            minAge: Number(data.minAge),
+            maxGuest: Number(data.maxGuest),
             startDate: formatISO(data.startDate),
             endDate: formatISO(data.endDate),
-            included: data.included.map((item: { value: string }) => item.value),
-            excluded: data.excluded.map((item: { value: string }) => item.value),
-            amenities: data.amenities.map((item: { value: string }) => item.value),
-            tourPlan: data.tourPlan.map((item: { value: string }) => item.value),
+            included:
+                data.included[0].value === ""
+                    ? []
+                    : data.included.map((item: { value: string }) => item.value),
+            excluded:
+                data.included[0].value === ""
+                    ? []
+                    : data.excluded.map((item: { value: string }) => item.value),
+            amenities:
+                data.amenities[0].value === ""
+                    ? []
+                    : data.amenities.map((item: { value: string }) => item.value),
+            tourPlan:
+                data.tourPlan[0].value === ""
+                    ? []
+                    : data.tourPlan.map((item: { value: string }) => item.value),
         }
 
         const formData = new FormData();
 
         formData.append("data", JSON.stringify(tourData))
         images.forEach((image) => formData.append("files", image as File));
+
         console.log('Tour raw data-->', data);
         console.log('tourData ===> ', tourData);
 
-        // try {
-        //     const res = await addTour(formData).unwrap()
-        // } catch (error) {
-        //     console.log(error);
-        // }
+        try {
+            const res = await addTour(formData).unwrap();
+            console.log('res==>', res);
+            if (res.success) {
+                toast.success("Tour created", { id: toastId });
+                form.reset();
+            }
+        } catch (error) {
+            console.log(error);
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const err = error as any;
+
+            toast.error(err.data.message || "Something went wrong", { id: toastId })
+            // form.reset();
+        }
     }
     return (
         <div className="w-full max-w-4xl mx-auto px-5 mt-16">
