@@ -44,12 +44,18 @@ const AddTour = () => {
             division: "",
             tourType: "",
             description: "",
+            location: "",
+            costFrom: "",
             startDate: "",
             endDate: "",
+            departureLocation: "",
+            arrivalLocation: "",
             included: [{ value: "" }],
             excluded: [{ value: "" }],
             amenities: [{ value: "" }],
             tourPlan: [{ value: "" }],
+            maxGuest: "",
+            minAge: ""
         }
     })
 
@@ -71,7 +77,24 @@ const AddTour = () => {
         name: "excluded"
     })
 
-    console.log('includedFields==>', includedFields);
+    const {
+        fields: amenitiesFields,
+        append: appendAmenities,
+        remove: removeAmenities,
+    } = useFieldArray({
+        control: form.control,
+        name: "amenities"
+    })
+
+    const {
+        fields: tourPlanFields,
+        append: appendTourPlan,
+        remove: removeTourPlan,
+    } = useFieldArray({
+        control: form.control,
+        name: "tourPlan"
+    })
+
 
     const handleSubmit: SubmitHandler<FieldValues> = async (data) => {
         const tourData = {
@@ -80,13 +103,15 @@ const AddTour = () => {
             endDate: formatISO(data.endDate),
             included: data.included.map((item: { value: string }) => item.value),
             excluded: data.excluded.map((item: { value: string }) => item.value),
+            amenities: data.amenities.map((item: { value: string }) => item.value),
+            tourPlan: data.tourPlan.map((item: { value: string }) => item.value),
         }
 
         const formData = new FormData();
 
         formData.append("data", JSON.stringify(tourData))
         images.forEach((image) => formData.append("files", image as File));
-
+        console.log('Tour raw data-->', data);
         console.log('tourData ===> ', tourData);
 
         // try {
@@ -123,6 +148,66 @@ const AddTour = () => {
                                     </FormItem>
                                 )}
                             />
+
+                            {/* Location - Cost */}
+                            <div className="md:flex gap-5">
+                                <FormField
+                                    control={form.control}
+                                    name="location"
+                                    render={({ field }) => (
+                                        <FormItem className="flex-1">
+                                            <FormLabel>Location</FormLabel>
+                                            <FormControl>
+                                                <Input {...field}></Input>
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    control={form.control}
+                                    name="costFrom"
+                                    render={({ field }) => (
+                                        <FormItem className="flex-1 mt-4 md:mt-0">
+                                            <FormLabel>Cost</FormLabel>
+                                            <FormControl>
+                                                <Input {...field}></Input>
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                            </div>
+
+                            {/* Departure - Arrival */}
+                            <div className="md:flex gap-5">
+                                <FormField
+                                    control={form.control}
+                                    name="departureLocation"
+                                    render={({ field }) => (
+                                        <FormItem className="flex-1">
+                                            <FormLabel>Departure Location</FormLabel>
+                                            <FormControl>
+                                                <Input {...field}></Input>
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    control={form.control}
+                                    name="arrivalLocation"
+                                    render={({ field }) => (
+                                        <FormItem className="flex-1 mt-4 md:mt-0">
+                                            <FormLabel>Arrival Location</FormLabel>
+                                            <FormControl>
+                                                <Input {...field}></Input>
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                            </div>
 
                             {/* Star date - End date */}
                             <div className="md:flex gap-5  ">
@@ -171,7 +256,7 @@ const AddTour = () => {
                                     control={form.control}
                                     name="endDate"
                                     render={({ field }) => (
-                                        <FormItem className="flex flex-col flex-1">
+                                        <FormItem className="flex flex-col flex-1 mt-4 md:mt-0">
                                             <FormLabel>End Date</FormLabel>
                                             <Popover>
                                                 <PopoverTrigger asChild>
@@ -274,6 +359,36 @@ const AddTour = () => {
                                 />
                             </div>
 
+                            {/* Max Guest - Minimum Age */}
+                            <div className="md:flex gap-5">
+                                <FormField
+                                    control={form.control}
+                                    name="maxGuest"
+                                    render={({ field }) => (
+                                        <FormItem className="flex-1">
+                                            <FormLabel>Max Guest</FormLabel>
+                                            <FormControl>
+                                                <Input {...field}></Input>
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    control={form.control}
+                                    name="minAge"
+                                    render={({ field }) => (
+                                        <FormItem className="flex-1 mt-4 md:mt-0">
+                                            <FormLabel>Minimum Age</FormLabel>
+                                            <FormControl>
+                                                <Input {...field}></Input>
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                            </div>
+
                             {/* Description - Images */}
                             <div className="md:flex gap-5 items-stretch">
                                 <FormField
@@ -319,7 +434,6 @@ const AddTour = () => {
 
                                                     render={({ field }) => (
                                                         <FormItem className="flex-1">
-
                                                             <FormControl>
                                                                 <Input {...field} />
                                                             </FormControl>
@@ -377,6 +491,91 @@ const AddTour = () => {
                                                     size={"icon"}
                                                     className="!bg-red-700"
                                                     onClick={() => removeExcluded(index)}
+                                                > <Trash2></Trash2>
+                                                </Button>
+                                            </div>
+                                        ))
+                                    }
+                                </div>
+                            </div>
+
+                            {/* Amenities */}
+                            <div>
+                                <div className="flex justify-between">
+                                    <p className="font-semibold">Amenities</p>
+                                    <Button
+                                        type="button"
+                                        size={"icon"}
+                                        variant={"outline"}
+                                        onClick={() => appendAmenities({ value: "" })}
+                                    ><Plus></Plus>
+                                    </Button>
+                                </div>
+                                <div className="space-y-4 mt-4">
+                                    {
+                                        amenitiesFields.map((item, index) => (
+                                            <div key={item.id} className="flex gap-2">
+                                                <FormField
+                                                    control={form.control}
+                                                    name={`amenities.${index}.value`}
+                                                    render={({ field }) => (
+                                                        <FormItem className="flex-1">
+                                                            <FormControl>
+                                                                <Input {...field} />
+                                                            </FormControl>
+                                                            <FormMessage />
+                                                        </FormItem>
+                                                    )}
+                                                />
+                                                <Button
+                                                    type="button"
+                                                    variant={"destructive"}
+                                                    size={"icon"}
+                                                    className="!bg-red-700"
+                                                    onClick={() => removeAmenities(index)}
+                                                > <Trash2></Trash2>
+                                                </Button>
+                                            </div>
+                                        ))
+                                    }
+                                </div>
+                            </div>
+
+                            {/* Tour Plan */}
+                            <div>
+                                <div className="flex justify-between">
+                                    <p className="font-semibold">Tour Plan</p>
+                                    <Button
+                                        type="button"
+                                        variant={"outline"}
+                                        size={"icon"}
+                                        onClick={() => appendTourPlan({ value: "" })}
+                                    >
+                                        <Plus></Plus>
+                                    </Button>
+                                </div>
+                                <div className="space-y-4 mt-4">
+                                    {
+                                        tourPlanFields.map((item, index) => (
+                                            <div key={item.id} className="flex gap-2">
+                                                <FormField
+                                                    control={form.control}
+                                                    name={`tourPlan.${index}.value`}
+                                                    render={({ field }) => (
+                                                        <FormItem className="flex-1">
+                                                            <FormControl>
+                                                                <Input {...field} />
+                                                            </FormControl>
+                                                            <FormMessage />
+                                                        </FormItem>
+                                                    )}
+                                                />
+                                                <Button
+                                                    type="button"
+                                                    variant={"destructive"}
+                                                    size={"icon"}
+                                                    className="!bg-red-700"
+                                                    onClick={() => removeTourPlan(index)}
                                                 > <Trash2></Trash2>
                                                 </Button>
                                             </div>
