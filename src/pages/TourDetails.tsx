@@ -22,7 +22,7 @@ const TourDetails = () => {
                 </div>
                 <div>
                     <Button asChild>
-                        <Link to={`/booking`}>Book Now</Link>
+                        <Link to={`/booking/${tourData?._id}`}>Book Now</Link>
                     </Button>
                 </div>
             </div>
