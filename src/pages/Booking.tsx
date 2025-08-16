@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { useCreateBookingMutation } from "@/redux/features/booking/booking.api";
 import { useGetAllToursQuery } from "@/redux/features/Tour/tour.api";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
@@ -74,7 +75,8 @@ const Booking = () => {
     // };
 
     const { id } = useParams();
-    const { data, isLoading, isError } = useGetAllToursQuery({ _id: id })
+    const { data, isLoading, isError } = useGetAllToursQuery({ _id: id });
+    const [createBooking] = useCreateBookingMutation();
     const tourData = data?.[0];
 
     useEffect(() => {
@@ -90,6 +92,26 @@ const Booking = () => {
 
     const decrementGuest = () => {
         setGuestCount((prv) => prv - 1);
+    }
+
+    const handleBooking = async () => {
+        let bookingData
+        if (data) {
+            bookingData = {
+                tour: id,
+                guestCount
+            }
+        };
+
+        try {
+            const res = await createBooking(bookingData).unwrap();
+            if (res.success) {
+                window.open(res.data.paymentUrl)
+            }
+        } catch (error) {
+            console.log(error);
+        }
+
     }
 
     if (isLoading) return <div className="flex items-center justify-center min-h-screen"><p>Loading..</p></div>
@@ -206,7 +228,7 @@ const Booking = () => {
                                     </div>
                                 </div>
 
-                                <Button className="w-full" size="lg">
+                                <Button onClick={handleBooking} className="w-full" size="lg">
                                     Book Now
                                 </Button>
                             </div>
