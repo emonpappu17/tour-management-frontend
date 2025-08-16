@@ -8,11 +8,11 @@ const Tours = () => {
     return (
         <div className="container mx-auto px-5 py-8 grid grid-cols-12 gap-5">
             <div className="col-span-3 w-full h-[500px] border border-muted rounded-md"></div>
-            <div className="col-span-9 w-full">
+            <div className="col-span-9 w-full ">
                 {data?.map((item) => (
                     <div
                         key={item.slug}
-                        className="border border-muted rounded-lg shadow-md overflow-hidden mb-6 flex"
+                        className="border border-muted rounded-lg shadow-md overflow-hidden mb-6 flex "
                     >
                         <div className="w-2/5 bg-red-500 flex-shrink-0">
                             <img
