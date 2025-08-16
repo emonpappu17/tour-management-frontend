@@ -1,10 +1,12 @@
 import { Button } from "@/components/ui/button";
 import { useGetAllToursQuery } from "@/redux/features/Tour/tour.api";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 
 const Booking = () => {
     const [guestCount, setGuestCount] = useState(1);
+    const [totalAmount, setTotalAmount] = useState(0);
+
 
     // const tourData = {
     //     _id: "1",
@@ -71,10 +73,24 @@ const Booking = () => {
     //     setGuestCount((prv) => prv - 1);
     // };
 
-
     const { id } = useParams();
     const { data, isLoading, isError } = useGetAllToursQuery({ _id: id })
     const tourData = data?.[0];
+
+    useEffect(() => {
+        if (!isLoading && !isError) {
+            setTotalAmount(guestCount * tourData!.costFrom)
+        }
+    }, [guestCount, totalAmount, isLoading, isError]);
+
+    const incrementGuest = () => {
+        setGuestCount((prv) => prv + 1);
+        // setGuestCount(guestCount + 1); // both are same
+    }
+
+    const decrementGuest = () => {
+        setGuestCount((prv) => prv - 1);
+    }
 
     if (isLoading) return <div className="flex items-center justify-center min-h-screen"><p>Loading..</p></div>
 
@@ -156,7 +172,7 @@ const Booking = () => {
                                     </label>
                                     <div className="flex items-center space-x-3">
                                         <button
-                                            // onClick={decrementGuest}
+                                            onClick={decrementGuest}
                                             disabled={guestCount <= 1}
                                             className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center disabled:opacity-50"
                                         >
@@ -166,7 +182,7 @@ const Booking = () => {
                                             {guestCount}
                                         </span>
                                         <button
-                                            // onClick={incrementGuest}
+                                            onClick={incrementGuest}
                                             disabled={guestCount >= tourData!.maxGuest}
                                             className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center disabled:opacity-50"
                                         >
@@ -186,7 +202,7 @@ const Booking = () => {
                                     </div>
                                     <div className="flex justify-between text-lg font-bold">
                                         <span>Total Amount:</span>
-                                        {/* <span>${totalAmount}</span> */}
+                                        <span>${totalAmount}</span>
                                     </div>
                                 </div>
 
