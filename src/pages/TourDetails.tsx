@@ -1,13 +1,31 @@
 import { Button } from "@/components/ui/button";
-import { useGetAllToursQuery } from "@/redux/features/Tour/tour.api";
+import { useGetDivisionsQuery } from "@/redux/features/division/division.api";
+import { useGetAllToursQuery, useGetTourTypesQuery } from "@/redux/features/Tour/tour.api";
+import { format } from "date-fns";
 import { Link, useParams } from "react-router";
 
 const TourDetails = () => {
     const { id } = useParams();
-    const { data, isLoading } = useGetAllToursQuery({ _id: id })
+
+    // API Calls
+    const { data, isLoading } = useGetAllToursQuery({ _id: id });
+    const { data: divisionData } = useGetDivisionsQuery(
+        { _id: data?.[0]?.division, fields: "name" },
+        { skip: !data }   // this api will not call until the tour data fetched
+    )
+    const { data: tourTypeData } = useGetTourTypesQuery(
+        { _id: data?.[0]?.tourType, fields: "name" },
+        { skip: !data }   // this api will not call until the tour data fetched
+    )
+
+    console.log('Tour data==>', data);
+    console.log('divisionData==>', divisionData);
+    console.log('tourTypeData==>', tourTypeData);
+
     const tourData = data?.[0];
 
     if (isLoading) return <div className="flex items-center justify-center min-h-screen"><p>Loading..</p></div>
+
     return (
         <div className="container mx-auto p-6">
             {/* Header */}
@@ -45,7 +63,7 @@ const TourDetails = () => {
                     <h2 className="text-xl font-semibold mb-4">Tour Details</h2>
                     <div className="space-y-2">
                         <p>
-                            <strong>Dates:</strong>{tourData?.startDate} -{" "}
+                            <strong>Dates:</strong>{format(new Date(tourData?.startDate ? tourData?.startDate : new Date()), "PP")} -{" "} {format(new Date(tourData?.endDate ? tourData?.endDate : new Date()), "PP")}
 
                         </p>
                         <p>
@@ -55,10 +73,10 @@ const TourDetails = () => {
                             <strong>Arrival:</strong> {tourData?.arrivalLocation}
                         </p>
                         <p>
-                            <strong>Division:</strong> {tourData?.division}
+                            <strong>Division:</strong> {divisionData?.[0]?.name}
                         </p>
                         <p>
-                            <strong>Tour Type:</strong> {tourData?.tourType}
+                            <strong>Tour Type:</strong> {tourTypeData?.data?.[0]?.name}
                         </p>
                         <p>
                             <strong>Min Age:</strong> {tourData?.minAge} years
