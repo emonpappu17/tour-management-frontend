@@ -10,7 +10,7 @@ export default function HeroSection() {
         undefined
     );
 
-    const { data: divisionData, isLoading: divisionIsLoading } =
+    const { data: divisionData, } =
         useGetDivisionsQuery(undefined);
 
     const divisionOption = divisionData?.map(

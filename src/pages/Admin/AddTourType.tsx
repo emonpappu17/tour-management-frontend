@@ -5,9 +5,25 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { useGetTourTypesQuery, useRemoveTourTypeMutation } from "@/redux/features/Tour/tour.api";
 import { Trash2 } from "lucide-react";
 import { toast } from "sonner";
+import {
+    Pagination,
+    PaginationContent,
+    PaginationEllipsis,
+    PaginationItem,
+    PaginationLink,
+    PaginationNext,
+    PaginationPrevious,
+} from "@/components/ui/pagination"
+import { useState } from "react";
 
 const AddTourType = () => {
-    const { data } = useGetTourTypesQuery(undefined);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [limit, setLimit] = useState(2);
+
+    console.log('currentPage=>', currentPage);
+
+    // API Calls
+    const { data } = useGetTourTypesQuery({ page: currentPage, limit });
     const [removeTourType] = useRemoveTourTypeMutation();
 
     const handleRemoveTourType = async (tourId: string) => {
@@ -58,6 +74,30 @@ const AddTourType = () => {
                         }
                     </TableBody>
                 </Table>
+            </div>
+            <div className="flex justify-start mt-3">
+                <div>
+                    <Pagination>
+                        <PaginationContent>
+                            <PaginationItem>
+                                <PaginationPrevious
+                                    onClick={() => setCurrentPage(prev => prev - 1)}
+                                />
+                            </PaginationItem>
+                            <PaginationItem>
+                                <PaginationLink href="#">1</PaginationLink>
+                            </PaginationItem>
+                            <PaginationItem>
+                                <PaginationEllipsis />
+                            </PaginationItem>
+                            <PaginationItem>
+                                <PaginationNext
+                                    onClick={() => setCurrentPage(prev => prev + 1)}
+                                />
+                            </PaginationItem>
+                        </PaginationContent>
+                    </Pagination>
+                </div>
             </div>
         </div>
 
