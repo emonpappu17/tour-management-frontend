@@ -19,13 +19,9 @@ const AddTourType = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [limit, setLimit] = useState(5);
 
-    console.log('currentPage=>', currentPage);
-
     // API Calls
     const { data } = useGetTourTypesQuery({ page: currentPage, limit });
     const [removeTourType] = useRemoveTourTypeMutation();
-
-    console.log(data);
 
     const handleRemoveTourType = async (tourId: string) => {
         const toastId = toast.loading("Removing...");
@@ -43,7 +39,7 @@ const AddTourType = () => {
     }
 
     const totalPage = data?.meta?.totalPage || 1;
-    console.log(Array.from({ length: totalPage }, (_, index) => index + 1));
+    // console.log(Array.from({ length: totalPage }, (_, index) => index + 1));
     return (
         <div className="w-full max-w-7xl mx-auto px-5">
             <div className="flex justify-between my-8">
