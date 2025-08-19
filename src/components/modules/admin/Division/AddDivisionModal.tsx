@@ -13,6 +13,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { useAddDivisionMutation } from "@/redux/features/division/division.api"
+import { PlusIcon } from "lucide-react"
 import { useState } from "react"
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form"
 import { toast } from "sonner"
@@ -62,13 +63,21 @@ export function AddDivisionModal() {
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button >Add Division</Button>
+                {/* <Button >Add Division</Button> */}
+                <Button className="ml-auto" variant="outline">
+                    <PlusIcon
+                        className="-ms-1 opacity-60"
+                        size={16}
+                        aria-hidden="true"
+                    />
+                    Add Division
+                </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
                     <DialogTitle>Add Division</DialogTitle>
                 </DialogHeader>
-                
+
                 <Form {...form}>
                     <form className="space-y-5" id="add-division" onSubmit={form.handleSubmit(onSubmit)}>
                         <FormField

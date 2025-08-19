@@ -19,15 +19,17 @@ interface IProps {
 export function DeleteConfirmation({ children, onConfirm }: IProps) {
 
     const handleConfirm = () => {
+
+        console.log('confirm inside');
         onConfirm();
     }
 
     return (
         <AlertDialog>
-            <AlertDialogTrigger asChild>
+            <AlertDialogTrigger >
                 {children}
             </AlertDialogTrigger>
-            <AlertDialogContent>
+            <AlertDialogContent >
                 <AlertDialogHeader>
                     <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
                     <AlertDialogDescription>

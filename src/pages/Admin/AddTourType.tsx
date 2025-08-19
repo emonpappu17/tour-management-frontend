@@ -62,7 +62,7 @@ const AddTourType = () => {
                                 <TableRow key={index}>
                                     <TableCell className="font-medium w-full">{item.name}
                                     </TableCell>
-                                    <TableCell >
+                                    <TableCell>
                                         <DeleteConfirmation onConfirm={() => handleRemoveTourType(item._id)}>
                                             <Button
                                                 variant={"destructive"}

@@ -4,10 +4,18 @@ export type { ISendOtp, ILogin, IVerifyOtp } from "./auth.type";
 
 export type { ITourPackage } from "./tour.types"
 
+export type { IDivision } from "./division.types"
+
 export interface IResponse<T> {
     statusCode: number
     success: boolean
     message: string
+    meta?: {
+        page: number;
+        limit: number;
+        total: number;
+        totalPage: number;
+    };
     data: T
 }
 

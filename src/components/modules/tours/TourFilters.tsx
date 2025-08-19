@@ -19,7 +19,7 @@ const TourFilters = () => {
     const { data: divisionData, isLoading: divisionIsLoading } = useGetDivisionsQuery({ limit: 100, fields: "_id,name" });
     const { data: tourTypeData, isLoading: tourTypeIsLoading } = useGetTourTypesQuery({ limit: 100, fields: "_id,name" });
 
-    const divisionOption = divisionData?.map(
+    const divisionOption = divisionData?.data?.map(
         (item: { _id: string, name: string }) => ({
             label: item.name,
             value: item._id
