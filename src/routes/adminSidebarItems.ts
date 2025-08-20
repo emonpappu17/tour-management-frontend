@@ -1,11 +1,14 @@
-import AddDivision from "@/pages/Admin/AddDivision";
-import AddTour from "@/pages/Admin/AddTour";
-import AddTourType from "@/pages/Admin/AddTourType";
+// import AddDivision from "@/pages/Admin/AddDivision";
+// import AddTour from "@/pages/Admin/AddTour";
+// import AddTourType from "@/pages/Admin/AddTourType";
 // import Analytics from "@/pages/Admin/Analytics";
 import { ISidebarItem } from "@/types";
 import { lazy } from "react";
 
 const Analytics = lazy(() => import("@/pages/Admin/Analytics"))
+const AddDivision = lazy(() => import("@/pages/Admin/AddDivision"))
+const AddTourType = lazy(() => import("@/pages/Admin/AddTourType"))
+const AddTour = lazy(() => import("@/pages/Admin/AddTour"))
 
 export const adminSidebarItems: ISidebarItem[] = [
     {

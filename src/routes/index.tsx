@@ -12,12 +12,17 @@ import { withAuth } from "@/utils/withAuth";
 import Unauthorized from "@/pages/Unauthorized";
 import { role } from "@/constants/role";
 import { TRole } from "@/types";
-import Tours from "@/pages/Tours";
-import TourDetails from "@/pages/TourDetails";
+// import Tours from "@/pages/Tours";
+// import TourDetails from "@/pages/TourDetails";
 import Booking from "@/pages/Booking";
 import Homepage from "@/pages/Homepage";
 import Success from "@/pages/Payment/Success";
 import Fail from "@/pages/Payment/Fail";
+import { lazy } from "react";
+
+const Tours = lazy(() => import("@/pages/Tours"))
+const TourDetails = lazy(() => import("@/pages/TourDetails"))
+
 
 export const router = createBrowserRouter([
     {
